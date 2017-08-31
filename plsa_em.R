@@ -122,8 +122,8 @@ gamma_numerator <- function(theta, beta){
   end.time <- Sys.time()
   time.taken <- end.time - start.time
   
-  print("Execution of gamma_numerator2")
-  print(time.taken)
+  #print("Execution of gamma_numerator2")
+  #print(time.taken)
   
   gamma_num
 }
@@ -138,8 +138,8 @@ gamma_denom <- function(theta, beta){
   
   end.time <- Sys.time()
   time.taken <- end.time - start.time
-  print("Execution of gamma_denom")
-  print(time.taken)
+  #print("Execution of gamma_denom")
+  #print(time.taken)
   
   gamma_denom
 }
