@@ -1,6 +1,7 @@
 
 
 #P(w|z)
+
 reestimate_beta_num <- function(K, m_tf, gamma){
   
   start.time <- Sys.time()
@@ -10,9 +11,7 @@ reestimate_beta_num <- function(K, m_tf, gamma){
   
   beta_numerator <- matrix(0,K,V)
   for(k in (1:K)){
-    for(i in (1:V)){
-      beta_numerator[k,i] <- crossprod(m_tf[i,], gamma[i,,k])
-    }
+    beta_numerator[k,] <- rowSums(m_tf * gamma[,,k])
   }
   
   end.time <- Sys.time()
@@ -24,8 +23,15 @@ reestimate_beta_num <- function(K, m_tf, gamma){
 }
 
 reestimate_beta_denom <- function(beta_numerator){
-
-  beta_denom <- apply(beta_numerator, MARGIN = c(1), sum)
+  start.time <- Sys.time()
+  
+  beta_denom <- rowSums(beta_numerator)
+  
+  end.time <- Sys.time()
+  time.taken <- end.time - start.time
+  #print("Execution of reestimate_beta_denom")
+  #print(time.taken)
+  
   beta_denom
 }
 
@@ -48,7 +54,10 @@ reestimate_beta <- function(K, m_tf, gamma){
 }
 
 #P(d|z)
+
 reestimate_theta_num <- function(K, m_tf, gamma){
+  
+  start.time <- Sys.time()
   
   tfDim <- dim(m_tf)
   M <- tfDim[2]
@@ -56,27 +65,45 @@ reestimate_theta_num <- function(K, m_tf, gamma){
   
   theta_num <- matrix(0,M,K)
   for(k in (1:K)){
-    for(j in (1:M)){
-      theta_num[j,k] <- crossprod(m_tf[,j], gamma[,j,k])
-    }
+    theta_num[,k] = colSums(m_tf * gamma[,,k])
   }
+  
+  end.time <- Sys.time()
+  time.taken <- end.time - start.time
+  #print("Execution of reestimate_theta_num2")
+  #print(time.taken)
   
   theta_num
 }
 
 reestimate_theta_denom <- function(m_tf){
   
-  theta_denom <- apply(m_tf, MARGIN = c(2), sum)
+  start.time <- Sys.time()
+  
+  theta_denom <- colSums(m_tf)
+  
+  end.time <- Sys.time()
+  time.taken <- end.time - start.time
+  #print("Execution of reestimate_theta_denom")
+  #print(time.taken)
+  
   theta_denom
 }
 
 #P(z_k|d_i)
 reestimate_theta <- function(K, m_tf, gamma){
   
+  start.time <- Sys.time()
+  
   theta_num <- reestimate_theta_num(K,m_tf,gamma)
   theta_denom <- reestimate_theta_denom(m_tf)
   
   theta <- theta_num / theta_denom
+  
+  end.time <- Sys.time()
+  time.taken <- end.time - start.time
+  #print("Execution of reestimate_theta")
+  #print(time.taken)
   theta
 }
 
@@ -95,8 +122,8 @@ gamma_numerator <- function(theta, beta){
   end.time <- Sys.time()
   time.taken <- end.time - start.time
   
-  #print("Execution of gamma_numerator2")
-  #print(time.taken)
+  print("Execution of gamma_numerator2")
+  print(time.taken)
   
   gamma_num
 }
@@ -111,8 +138,8 @@ gamma_denom <- function(theta, beta){
   
   end.time <- Sys.time()
   time.taken <- end.time - start.time
-  #print("Execution of gamma_denom")
-  #print(time.taken)
+  print("Execution of gamma_denom")
+  print(time.taken)
   
   gamma_denom
 }
@@ -124,16 +151,24 @@ reestimate_gamma <-  function(theta, beta){
   
   gamma_denom <- gamma_denom(theta, beta)
   
+  divide.start.time <- Sys.time()
   gamma <- array(0, dim=c(V, M, K))
   
   for(k in 1:K){
     gamma[,,k] <- gamma_num[,,k] / gamma_denom
   }
+  
+  divide.end.time <- Sys.time()
+  divide.time.taken <- divide.end.time - divide.start.time
+  print("Execution of divide")
+  print(divide.time.taken)
+  
+  
 
   end.time <- Sys.time()
   time.taken <- end.time - start.time
-  #print("Execution of reestimate_gamma")
-  #print(time.taken)
+  print("Execution of reestimate_gamma")
+  print(time.taken)
   gamma
 }
 

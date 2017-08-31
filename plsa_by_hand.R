@@ -48,6 +48,6 @@ K
 
 m_tf <- as.matrix(tf)
 
-liks <- plsaEM(K, m_tf, iter = 500)
+liks <- plsaEM(K, m_tf, iter = 5)
 
 

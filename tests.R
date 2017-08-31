@@ -89,6 +89,13 @@ A
 B <- matrix(c(1,2,3,4,5,6,7,8,9,10,11,12, 13, 14, 15), nrow = 3, ncol = 5)
 B
 
+C <- matrix(c(1,2,3,4,5,6,7,8,9,10,11,12, 13, 14, 15), nrow = 3, ncol = 5)
+C
+
+crossprod(B, C)
+
+
+C
 outer(A,B)
 
 dim(A %o% B)
@@ -140,3 +147,77 @@ gamma_num[1,1,]
 dim(gamma_num[,1,])
 
 dim(gamma_num[1,,])
+
+a1 <- crossprod(m_tf[i,], gamma[i,,k])
+a1
+
+a2 <- m_tf[i,] %*% gamma[i,,k]
+a2
+
+
+beta_numerator[k,] <- tcrossprod(m_tf, gamma[,,3])
+
+x <- c(1,2,3)
+
+A
+B
+C
+S
+
+S = numeric(3)
+for(i in 1:3){
+  S[i]= B[i,] %*% C[i,]
+}
+
+for(i in 1:3){
+  S[i]= crossprod(B[i,], C[i,])
+}
+S
+
+beta <- initBeta(10, m_tf)
+theta <- initTheta(10, m_tf)
+
+gamma <- reestimate_gamma(theta, beta)
+
+gamma[1:10,1:10,1]
+
+beta_num1 <- reestimate_beta_num(K, m_tf, gamma)
+beta_num2 <- reestimate_beta_num2(K, m_tf, gamma)
+beta_num3 <- reestimate_beta_num3(K, m_tf, gamma)
+
+all.equal(beta_num1, beta_num2)
+all.equal(beta_num1, beta_num3)
+
+beta_denom1 <- reestimate_beta_denom(beta_num1)
+beta_denom2 <- reestimate_beta_denom2(beta_num1)
+
+all.equal(beta_denom1, beta_denom2)
+
+theta_num1 <- reestimate_theta_num(K, m_tf, gamma)
+theta_num2 <- reestimate_theta_num2(K, m_tf, gamma)
+
+all.equal(theta_num1, theta_num2)
+
+
+theta_denom1 <- reestimate_theta_denom(m_tf)
+theta_denom2 <- reestimate_theta_denom2(m_tf)
+
+all.equal(theta_denom1, theta_denom2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
