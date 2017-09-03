@@ -205,19 +205,49 @@ theta_denom2 <- reestimate_theta_denom2(m_tf)
 all.equal(theta_denom1, theta_denom2)
 
 
+A <- matrix(c(1,2,3,4,5,6,7,8,9,10,11,12, 13, 14, 15, 16, 17,18), nrow = 6, ncol = 3)
+
+D <- array(data = c(1,2,3,4,5,6,7,8,9,10,11,12, 13, 14, 15, 16, 17,18), dim = c(3,3,2))
+D
+
+prop.table(D, 1)
+
+
+gamma_num <- gamma_numerator(theta, beta)
+gamma_denom <- gamma_denom(theta, beta)
+
+gamma <- sapply(1:K, function(k) gamma_num[,,k] / gamma_denom)
+
+gamma_num / gamma_denom
 
 
 
+dim(gamma_num)
+dim(gamma_denom)
+
+K=500
+beta <- initBeta(K, m_tf)
+theta <- initTheta(K, m_tf)
+
+K <- dim(beta)[1]
+V <- dim(beta)[2]
+M <- dim(theta)[1]
+
+gamma_num <- array(0, dim=c(V, M, K))
+rm(gamma_num)
+
+gamma_num <- gamma_numerator(theta, beta)
+rm(gamma_num)
+gamma_num2 <- gamma_numerator(theta, beta)
 
 
 
+gamma_d <- gamma_denom(theta, beta)
 
 
+gamma <- reestimate_gamma(theta, beta)
+check_gamma(gamma)
 
-
-
-
-
-
-
+gamma1 <- gamma_numerator(theta,beta)
+gamma2 <- gamma_numerator2(theta,beta)
 

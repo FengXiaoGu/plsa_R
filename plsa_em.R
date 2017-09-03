@@ -128,6 +128,8 @@ gamma_numerator <- function(theta, beta){
   gamma_num
 }
 
+gamma_numerator2 <- compiler::cmpfun(gamma_numerator)
+
 gamma_denom <- function(theta, beta){
   
   start.time <- Sys.time()
@@ -146,29 +148,31 @@ gamma_denom <- function(theta, beta){
 
 reestimate_gamma <-  function(theta, beta){
   
+  K <- dim(beta)[1]
+  
   start.time <- Sys.time()
   gamma_num <- gamma_numerator(theta, beta)
   
   gamma_denom <- gamma_denom(theta, beta)
   
-  divide.start.time <- Sys.time()
+   divide.start.time <- Sys.time()
   gamma <- array(0, dim=c(V, M, K))
   
   for(k in 1:K){
     gamma[,,k] <- gamma_num[,,k] / gamma_denom
   }
   
-  divide.end.time <- Sys.time()
-  divide.time.taken <- divide.end.time - divide.start.time
-  print("Execution of divide")
-  print(divide.time.taken)
+   divide.end.time <- Sys.time()
+   divide.time.taken <- divide.end.time - divide.start.time
+   #print("Execution of gamma divide")
+   #print(divide.time.taken)
   
   
 
   end.time <- Sys.time()
   time.taken <- end.time - start.time
-  print("Execution of reestimate_gamma")
-  print(time.taken)
+  # print("Execution of reestimate_gamma")
+  # print(time.taken)
   gamma
 }
 
@@ -177,9 +181,9 @@ genDist <- function(size){
   v/sum(v)
 }
 
-initBeta <- function(K, tf){
+initBeta <- function(K, m_tf){
 
-  tfDim <- dim(tf)
+  tfDim <- dim(m_tf)
   V <- tfDim[1]
   
   t(replicate(K, genDist(V)))
@@ -193,8 +197,8 @@ initTheta <- function(K, m_tf){
   t(replicate(M, genDist(K)))
 }
 
-calculateLogLikelihood <- function(beta, theta){
-  sum(tf * t(log(theta %*% beta)))
+calculateLogLikelihood <- function(m_tf, beta, theta){
+  sum(m_tf * t(log(theta %*% beta)))
 }
 
 printParameters <- function(parametersName, parameters){
@@ -208,14 +212,14 @@ plsaEM <- function(K, m_tf, iter = 10){
   # initialize params
   beta <- initBeta(K, m_tf)
   #printParameters("BETA", beta)
-  check_beta(beta)
+  #check_beta(beta)
   
   theta <- initTheta(K, m_tf)
   #printParameters("THETA", theta)
-  check_theta(theta)
+  #check_theta(theta)
   
-  logLikelihood <- calculateLogLikelihood(beta, theta)
-  print(paste("initial Log likelihood is = ", logLikelihood))
+  logLikelihood <- calculateLogLikelihood(m_tf, beta, theta)
+  #print(paste("initial Log likelihood is = ", logLikelihood))
   
   
   liks <- rep(0,iter + 1)
@@ -239,24 +243,26 @@ plsaEM <- function(K, m_tf, iter = 10){
     #check_theta(theta)
     #printParameters("THETA", theta)
     
-    logLikelihood <- calculateLogLikelihood(beta, theta)
+    logLikelihood <- calculateLogLikelihood(m_tf, beta, theta)
     liks[i+1] <- logLikelihood
     
     iter.end.time <- Sys.time()
     iter.time.taken <- iter.end.time - iter.start.time
-    print("Execution of sinlge iteration of plsaEM")
-    print(iter.time.taken)
+     print(paste("Execution of sinlge iteration of plsaEM, K=",K," iter=",i))
+     print(iter.time.taken)
     
-    print(paste("Log likelihood is = ", logLikelihood))
-    print(paste("Difference is = ", liks[i+1] - liks[i]))
+    #print(paste("Iteration ", i))
+    print(paste("Log likelihood is = ", logLikelihood, "Difference is = ", liks[i+1] - liks[i]))
+    # print(paste("Difference is = ", liks[i+1] - liks[i]))
     
   }
   
-  plot(1:(iter+1), liks)
+  # plot(1:(iter+1), liks)
   
   end.time <- Sys.time()
   time.taken <- end.time - start.time
   print("Execution of plsaEM")
   print(time.taken)
-  liks
+  # liks
+  logLikelihood
 }
