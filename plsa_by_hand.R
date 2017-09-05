@@ -1,10 +1,10 @@
 
-setwd('C:/doc/s/sem2/chudy/plsa')
-source('../repo/pub_lda/preprocessing.R')
-source('../repo/pub_lda/dimRed.R')
-source('../repo/pub_lda/classification.R')
-source('../repo/pub_lda/validation.R')
-source('../repo/pub_lda/choose_model.R')
+setwd('/Users/mjankowski/doc/plsa_R')
+source('../pub_lda/preprocessing.R')
+source('../pub_lda/dimRed.R')
+source('../pub_lda/classification.R')
+source('../pub_lda/validation.R')
+source('../pub_lda/choose_model.R')
 source('./plsa_em.R')
 
 ################################## PLSA ################################
@@ -13,7 +13,7 @@ source('./plsa_em.R')
 
 topic_number <- 10
 
-filePath = 'C:/doc/s/sem2/chudy/repo/pub_lda/apps_desc.csv'
+filePath = './apps_desc.csv'
 
 data <- read.csv(filePath, sep=";")  
 dim(data)
